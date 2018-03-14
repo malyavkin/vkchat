@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/chatListItem_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="8dp"
+        android:contentDescription="chat title"
+        app:srcCompat="@mipmap/ic_launcher_round" />
+
+    <TextView
+        android:id="@+id/chatListItem_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/chatListItem_image"
+        android:layout_toEndOf="@+id/chatListItem_image"
+        android:text="Chat Title"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/chatListItem_lastMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/chatListItem_image"
+        android:layout_alignEnd="@+id/chatListItem_image"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/chatListItem_title"
+        android:layout_toEndOf="@+id/chatListItem_image"
+        android:ellipsize="none"
+        android:maxLines="3"
+        android:text="Last message. Can be as long as you want since it's multiline. Also ellipsis should work for extra long text messages. I mean it's 130 characters." />
+</RelativeLayout>

@@ -65,7 +65,7 @@ public class OAuthActivity extends AppCompatActivity {
     }
 
     private void goToChatList() {
-        //startActivity(new Intent(OAuthActivity.this, ChatListActivity.class));
+        startActivity(new Intent(OAuthActivity.this, ChatListActivity.class));
         finish();
     }
 
