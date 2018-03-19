@@ -14,6 +14,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import Util.APIRequestBuilder;
 import Util.Constants;
 public class OAuthActivity extends AppCompatActivity {
 
@@ -64,8 +65,10 @@ public class OAuthActivity extends AppCompatActivity {
         }
     }
 
-    private void goToChatList() {
-        startActivity(new Intent(OAuthActivity.this, ChatListActivity.class));
+    private void goToChatList(String token) {
+        Intent I = new Intent(OAuthActivity.this, ChatListActivity.class);
+        I.putExtra(Constants.TOKEN, token);
+        startActivity(I);
         finish();
     }
 
@@ -80,7 +83,7 @@ public class OAuthActivity extends AppCompatActivity {
             Long tsLong = System.currentTimeMillis()/1000;
             Long validUntil = sharedPreferences.getLong(PREFS_OAUTH_EXPIRY, 0);
             if (tsLong < validUntil) {
-                goToChatList();
+                goToChatList(token);
                 return;
             }
         }
@@ -96,7 +99,7 @@ public class OAuthActivity extends AppCompatActivity {
                     return false;
                 }
                 Log.d(TAG, "shouldOverrideUrlLoading: "+ token);
-                goToChatList();
+                goToChatList(token);
                 return true;
             }
         });

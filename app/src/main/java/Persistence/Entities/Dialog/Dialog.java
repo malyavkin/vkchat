@@ -1,14 +1,15 @@
 package Persistence.Entities.Dialog;
 
-//import android.arch.persistence.room.ColumnInfo;
-//import android.arch.persistence.room.Entity;
-//import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
-// @Entity(tableName = "dialogs")
-public class Dialog {
+import Persistence.Entities.Model;
+
+@Entity(tableName = "dialogs")
+public class Dialog implements Model {
     private String lastMessage;
 
-    // @PrimaryKey
+    @PrimaryKey
     private int id;
     private String type;
     private String title;

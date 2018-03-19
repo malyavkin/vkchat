@@ -18,7 +18,8 @@ public class Constants {
 
     public static String API_V = "5.69";
 
-    public static final int DB_VERSION = 1;
-    public static final String DB_NAME = "VKChat";
+    public static final String TOKEN = "Token";
+    public static final String API = "API";
+
 
 }

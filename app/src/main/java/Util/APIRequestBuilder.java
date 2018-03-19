@@ -3,6 +3,8 @@ package Util;
 import java.util.ArrayList;
 import java.util.List;
 
+import Util.API.Method;
+
 
 public class APIRequestBuilder {
     private String key;
@@ -11,9 +13,10 @@ public class APIRequestBuilder {
     }
 
 
-    public String makeRequestUrl(String method, List<KV> parameters) {
+    public String makeRequestUrl(Method m) {
         ArrayList<String> queryParams = new ArrayList<>();
-        for (KV pair : parameters) {
+        ArrayList<KV> pairs = m.getParams();
+        for (KV pair : pairs) {
 
             queryParams.add(String.format("%s=%s", pair.first, pair.second));
         }
@@ -28,24 +31,10 @@ public class APIRequestBuilder {
 
         return String.format("%s/method/%s?%s&access_token=%s&v=%s",
                 Constants.API_DOMAIN,
-                method,
+                m.getMethod(),
                 params.toString(),
                 this.key,
                 Constants.API_V);
-
-
-    }
-
-    public String getDialogs(int offset, int count, boolean unreadOnly) {
-
-        ArrayList<KV> params = new ArrayList<>();
-        params.add(new KV("offset", offset));
-        params.add(new KV("count", count));
-        if(unreadOnly) {
-            params.add(new KV("unread", "1"));
-        }
-
-        return makeRequestUrl("messages.getDialogs", params);
 
 
     }
