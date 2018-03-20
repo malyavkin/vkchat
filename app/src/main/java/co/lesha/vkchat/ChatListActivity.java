@@ -8,19 +8,16 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import Adapter.ChatListAdapter;
 import Adapter.OnBottomReachedListener;
@@ -35,19 +32,21 @@ public class ChatListActivity extends AppCompatActivity {
     APIRequestBuilder api;
     ArrayList<Dialog> dialogs = new ArrayList<>();
 
-    void populateDialogs(ArrayList<Dialog> newDialogs, int startingWith) {
-        dialogs.ensureCapacity(startingWith + newDialogs.size());
-        dialogs.addAll(startingWith, newDialogs);
+    OnBottomReachedListener onBottomReachedListener = new OnBottomReachedListener() {
+        @Override
+        public void onBottomReached(int position) {
+            Toast.makeText(getApplicationContext(), "onBottomReached", Toast.LENGTH_SHORT).show();
+            obtainDialogs(dialogs.size(), 10, false);
+        }
+    };
 
+
+    /**
+     * Обновляет вьюху новым адаптером
+     */
+    void updateView() {
         ChatListAdapter adapter = new ChatListAdapter(this, dialogs);
-
-        adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
-            @Override
-            public void onBottomReached(int position) {
-                Toast.makeText(getApplicationContext(), "onBottomReached", Toast.LENGTH_SHORT).show();
-                obtainDialogs(dialogs.size(), 10, false);
-            }
-        });
+        adapter.setOnBottomReachedListener(onBottomReachedListener);
 
         if (rv.getAdapter() == null) {
             rv.setAdapter(adapter);
@@ -56,33 +55,70 @@ public class ChatListActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Обновляет список диалогов
+     * @param newDialogs массив новых данных
+     * @param startingWith
+     */
+    void populateDialogs(ArrayList<Dialog> newDialogs, int startingWith) {
+        dialogs.ensureCapacity(startingWith + newDialogs.size());
+        dialogs.addAll(startingWith, newDialogs);
+
+        updateView();
+    }
+
+    /**
+     * Создает слушатель запроса с диалогами
+     * @param method
+     * @param offset
+     * @return
+     */
+    Response.Listener<JSONObject> getOnDialogsObtainedListener(final GetDialogsMethod method, final int offset){
+        return new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("tag", response.toString());
+                try {
+                    populateDialogs(method.parseResult(response), offset);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+    };
+
+    /**
+     * Создает слушатель ошибки
+     * @return
+     */
+    Response.ErrorListener getOnErrorListener() {
+        return new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        };
+    }
+
+
+
+
+    /**
+     * Загружает порцию диалогов
+     * @param offset
+     * @param count
+     * @param unreadOnly
+     */
     void obtainDialogs(final int offset, int count, boolean unreadOnly) {
         final GetDialogsMethod method = new GetDialogsMethod(offset, count, unreadOnly);
         String s = api.makeRequestUrl(method);
         RequestQueue q = Volley.newRequestQueue(this);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(s, null,
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.d("tag", response.toString());
-
-                    try {
-                        populateDialogs(method.parseResult(response), offset);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            },
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            }
-        );
-
-        q.add(jsonObjectRequest);
+        q.add(new JsonObjectRequest(s, null,
+                getOnDialogsObtainedListener(method, offset),
+                getOnErrorListener()
+        ));
     }
 
     @Override
