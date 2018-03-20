@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.SparseArray;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -18,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import Adapter.ChatListAdapter;
 import Adapter.OnBottomReachedListener;
@@ -30,7 +32,7 @@ public class ChatListActivity extends AppCompatActivity {
 
     RecyclerView rv;
     APIRequestBuilder api;
-    ArrayList<Dialog> dialogs = new ArrayList<>();
+    SparseArray<Dialog> dialogs = new SparseArray<>();
 
     OnBottomReachedListener onBottomReachedListener = new OnBottomReachedListener() {
         @Override
@@ -100,7 +102,6 @@ public class ChatListActivity extends AppCompatActivity {
             }
         };
     }
-
 
 
 
