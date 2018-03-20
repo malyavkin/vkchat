@@ -17,10 +17,17 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
 
     Context context;
     ArrayList<Dialog> items;
+
+    // OnBottomReachedListener -- наш класс слушателя события, когда rv достигает дна
+    private OnBottomReachedListener onBottomReachedListener;
+
     public ChatListAdapter(Context context, ArrayList<Dialog> items) {
         this.items = items;
         this.context = context;
+    }
 
+    public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener){
+        this.onBottomReachedListener = onBottomReachedListener;
     }
 
     /**
@@ -48,6 +55,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         Dialog item = items.get(position);
         holder.chatListItem_title.setText(item.getTitle());
         holder.chatListItem_lastMessage.setText(item.getLastMessage());
+
+        if (position == items.size() - 1){
+            onBottomReachedListener.onBottomReached(position);
+        }
     }
 
     @Override
