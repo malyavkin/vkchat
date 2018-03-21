@@ -105,10 +105,6 @@ public class Dialog implements Model {
         this.lastMessage = lastMessage;
     }
 
-    public Dialog(String lastMessage, String title) {
-        this.lastMessage = lastMessage;
-        this.title = title;
-    }
     public Dialog(String lastMessage, String title, int id) {
         this.lastMessage = lastMessage;
         this.title = title;

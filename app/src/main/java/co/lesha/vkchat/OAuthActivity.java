@@ -3,18 +3,15 @@ package co.lesha.vkchat;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import Util.APIRequestBuilder;
 import Util.Constants;
 public class OAuthActivity extends AppCompatActivity {
 
@@ -32,7 +29,8 @@ public class OAuthActivity extends AppCompatActivity {
     }
 
     private String getOauthUrl() {
-        return String.format("%s?client_id=%s&display=page&redirect_uri=%s&scope=friends,messages&response_type=token&v=5.69&state=%s",
+        //return String.format("%s?client_id=%s&display=page&redirect_uri=%s&scope=friends,messages&response_type=token&v=5.69&state=%s",
+        return String.format("%s?client_id=%s&display=page&redirect_uri=%s&scope=offline,friends,messages&response_type=token&v=5.69&state=%s",
                 Constants.OAUTH_URL, Constants.CLIENT_ID, Constants.REDIRECT_URL, getState());
     }
 

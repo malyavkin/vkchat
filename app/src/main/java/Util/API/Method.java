@@ -1,19 +1,16 @@
 package Util.API;
 
+import android.util.SparseArray;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
-import Persistence.Entities.Model;
-import Util.KV;
+public abstract class Method<T> {
+    public abstract HashMap<String, String> getParams();
 
-/**
- * Created by lich on 2018-03-20.
- */
+    public abstract String getMethod();
 
-public interface Method<T> {
-    public ArrayList<KV> getParams();
-    public String getMethod();
-    public ArrayList<T> parseResult(JSONObject response) throws JSONException;
+    public abstract SparseArray<T> parseResult(JSONObject response) throws JSONException;
 }

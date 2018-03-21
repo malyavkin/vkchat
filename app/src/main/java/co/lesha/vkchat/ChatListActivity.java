@@ -5,28 +5,16 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseArray;
-import android.widget.Toast;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import Adapter.ChatListAdapter;
-import Adapter.OnBottomReachedListener;
 import Persistence.Entities.Dialog.Dialog;
-import Util.API.Methods.GetDialogsMethod;
 import Util.APIRequestBuilder;
 import Util.Constants;
+import Util.DialogSequentialDownloader;
+import Util.Listener;
 
 public class ChatListActivity extends AppCompatActivity {
 
@@ -34,21 +22,19 @@ public class ChatListActivity extends AppCompatActivity {
     APIRequestBuilder api;
     SparseArray<Dialog> dialogs = new SparseArray<>();
 
-    OnBottomReachedListener onBottomReachedListener = new OnBottomReachedListener() {
-        @Override
-        public void onBottomReached(int position) {
-            Toast.makeText(getApplicationContext(), "onBottomReached", Toast.LENGTH_SHORT).show();
-            obtainDialogs(dialogs.size(), 10, false);
-        }
-    };
-
+    public static <C> ArrayList<C> asList(SparseArray<C> sparseArray) {
+        if (sparseArray == null) return null;
+        ArrayList<C> arrayList = new ArrayList<C>(sparseArray.size());
+        for (int i = 0; i < sparseArray.size(); i++)
+            arrayList.add(sparseArray.valueAt(i));
+        return arrayList;
+    }
 
     /**
      * Обновляет вьюху новым адаптером
      */
     void updateView() {
-        ChatListAdapter adapter = new ChatListAdapter(this, dialogs);
-        adapter.setOnBottomReachedListener(onBottomReachedListener);
+        ChatListAdapter adapter = new ChatListAdapter(this, asList(dialogs));
 
         if (rv.getAdapter() == null) {
             rv.setAdapter(adapter);
@@ -58,68 +44,22 @@ public class ChatListActivity extends AppCompatActivity {
     }
 
     /**
-     * Обновляет список диалогов
-     * @param newDialogs массив новых данных
-     * @param startingWith
+     *
      */
-    void populateDialogs(ArrayList<Dialog> newDialogs, int startingWith) {
-        dialogs.ensureCapacity(startingWith + newDialogs.size());
-        dialogs.addAll(startingWith, newDialogs);
+    void obtainDialogs() {
+        DialogSequentialDownloader dsd = new DialogSequentialDownloader(
+                getApplicationContext(),
+                api,
+                new Listener<SparseArray<Dialog>>() {
 
-        updateView();
-    }
-
-    /**
-     * Создает слушатель запроса с диалогами
-     * @param method
-     * @param offset
-     * @return
-     */
-    Response.Listener<JSONObject> getOnDialogsObtainedListener(final GetDialogsMethod method, final int offset){
-        return new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("tag", response.toString());
-                try {
-                    populateDialogs(method.parseResult(response), offset);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    @Override
+                    public void call(SparseArray<Dialog> newDialogs) {
+                        dialogs = newDialogs;
+                        updateView();
+                    }
                 }
-            }
-        };
+        );
 
-    };
-
-    /**
-     * Создает слушатель ошибки
-     * @return
-     */
-    Response.ErrorListener getOnErrorListener() {
-        return new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        };
-    }
-
-
-
-    /**
-     * Загружает порцию диалогов
-     * @param offset
-     * @param count
-     * @param unreadOnly
-     */
-    void obtainDialogs(final int offset, int count, boolean unreadOnly) {
-        final GetDialogsMethod method = new GetDialogsMethod(offset, count, unreadOnly);
-        String s = api.makeRequestUrl(method);
-        RequestQueue q = Volley.newRequestQueue(this);
-
-        q.add(new JsonObjectRequest(s, null,
-                getOnDialogsObtainedListener(method, offset),
-                getOnErrorListener()
-        ));
     }
 
     @Override
@@ -133,6 +73,6 @@ public class ChatListActivity extends AppCompatActivity {
         Intent I = getIntent();
         String token = I.getStringExtra(Constants.TOKEN);
         api = new APIRequestBuilder(token);
-        obtainDialogs(0, 10, false);
+        obtainDialogs();
     }
 }

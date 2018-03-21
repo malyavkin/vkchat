@@ -57,7 +57,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         holder.chatListItem_lastMessage.setText(item.getLastMessage());
 
         if (position == items.size() - 1){
-            onBottomReachedListener.onBottomReached(position);
+            if (onBottomReachedListener != null) {
+                onBottomReachedListener.onBottomReached(position);
+            }
         }
     }
 
