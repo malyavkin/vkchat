@@ -15,6 +15,7 @@ import Util.API.APIRequestBuilder;
 import Util.Constants;
 import Util.Downloader.DialogSequentialDownloader;
 import Util.Listener;
+import Util.Network.Queue;
 
 public class ChatListActivity extends AppCompatActivity {
 
@@ -47,8 +48,8 @@ public class ChatListActivity extends AppCompatActivity {
      *
      */
     void obtainDialogs() {
-        DialogSequentialDownloader dsd = new DialogSequentialDownloader(
-                getApplicationContext(),
+        new DialogSequentialDownloader(
+                Queue.getInstance().getQueue(),
                 api,
                 new Listener<SparseArray<Dialog>>() {
 
