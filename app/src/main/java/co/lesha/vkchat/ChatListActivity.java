@@ -11,9 +11,9 @@ import java.util.ArrayList;
 
 import Adapter.ChatListAdapter;
 import Persistence.Entities.Dialog.Dialog;
-import Util.APIRequestBuilder;
+import Util.API.APIRequestBuilder;
 import Util.Constants;
-import Util.DialogSequentialDownloader;
+import Util.Downloader.DialogSequentialDownloader;
 import Util.Listener;
 
 public class ChatListActivity extends AppCompatActivity {

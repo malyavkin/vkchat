@@ -1,14 +1,15 @@
-package Util;
+package Util.API;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import Util.API.Method;
+import Util.Constants;
 
 
 public class APIRequestBuilder {
     private String key;
+
     public APIRequestBuilder(String key) {
         this.key = key;
     }
@@ -23,8 +24,8 @@ public class APIRequestBuilder {
         }
 
         StringBuilder params = new StringBuilder();
-        for(String item: queryParams) {
-            if(params.length() > 0) {
+        for (String item : queryParams) {
+            if (params.length() > 0) {
                 params.append("&");
             }
             params.append(item);

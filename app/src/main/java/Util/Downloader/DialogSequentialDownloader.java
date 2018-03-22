@@ -1,4 +1,4 @@
-package Util;
+package Util.Downloader;
 
 import android.content.Context;
 import android.util.SparseArray;
@@ -13,8 +13,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import Persistence.Entities.Dialog.Dialog;
+import Util.API.APIRequestBuilder;
 import Util.API.Method;
 import Util.API.Methods.GetDialogsMethod;
+import Util.Listener;
 
 /**
  * Created by amalyavkin on 21/03/2018.
