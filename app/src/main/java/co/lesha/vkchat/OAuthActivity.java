@@ -15,12 +15,12 @@ import java.net.URL;
 import Util.Constants;
 public class OAuthActivity extends AppCompatActivity {
 
-    WebView wv;
-    private static String TAG = "OAuthActivity";
+    private static final String TAG = "OAuthActivity";
     private static final String PREFS_OAUTH = "oauth";
     private static final String PREFS_OAUTH_TOKEN = "access_token";
     private static final String PREFS_OAUTH_EXPIRES_IN = "expires_in";
     private static final String PREFS_OAUTH_EXPIRY = "validUntil";
+    WebView wv;
     private SharedPreferences sharedPreferences;
 
 

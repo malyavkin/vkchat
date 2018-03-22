@@ -1,13 +1,9 @@
 package Util.Downloader;
 
-import android.content.Context;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +11,7 @@ import org.json.JSONObject;
 import Persistence.Entities.Dialog.Dialog;
 import Util.API.APIRequestBuilder;
 import Util.API.Method;
-import Util.API.Methods.GetDialogsMethod;
+import Util.API.Methods.messages.GetDialogsMethod;
 import Util.Listener;
 
 /**
@@ -23,12 +19,13 @@ import Util.Listener;
  */
 
 public class DialogSequentialDownloader extends SequentialDownloader<Dialog> {
+    private final static String TAG = "DialogSeqDl";
 
-    private final APIRequestBuilder api;
-    private SparseArray<Dialog> dialogs;
-    private Listener<SparseArray<Dialog>> listener;
-    private RequestQueue q;
-
+    public DialogSequentialDownloader(RequestQueue q,
+                                      APIRequestBuilder api,
+                                      Listener<SparseArray<Dialog>> listener) {
+        super(q, api, listener);
+    }
 
     @Override
     GetDialogsMethod getInitialParams() {
@@ -52,77 +49,21 @@ public class DialogSequentialDownloader extends SequentialDownloader<Dialog> {
 
     }
 
-    public DialogSequentialDownloader(Context ctx,
-                                      APIRequestBuilder api,
-                                      Listener<SparseArray<Dialog>> listener) {
-        this.api = api;
-        dialogs = new SparseArray<>();
-        q = Volley.newRequestQueue(ctx);
-        this.listener = listener;
-        run();
-    }
-
-    private void onFinish() {
-        listener.call(dialogs);
-    }
-
     @Override
     void processResponse(JSONObject response, Method<Dialog> method) {
-
         try {
             SparseArray<Dialog> newDialogs = method.parseResult(response);
 
             for (int i = 0; i < newDialogs.size(); i++) {
                 int key = newDialogs.keyAt(i);
-                dialogs.append(key, newDialogs.valueAt(i));
-            }
-
-            GetDialogsMethod newMethod = getParamsForNextRequest(response, method);
-            if (newMethod != null) {
-                q.add(buildRequest(newMethod));
-            } else {
-                onFinish();
+                items.append(key, newDialogs.valueAt(i));
             }
 
         } catch (JSONException e) {
-            q.add(buildRequest(method));
+            Log.e(TAG, "Cannot process response, restarting request");
+            requestQueue.add(buildRequest(method));
             e.printStackTrace();
         }
 
-
     }
-
-    @Override
-    void processError(VolleyError error, Method<Dialog> method) {
-        q.add(buildRequest(method));
-    }
-
-    @Override
-    JsonObjectRequest buildRequest(final Method<Dialog> method) {
-        String s = api.makeRequestUrl(method);
-        return new JsonObjectRequest(s, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        processResponse(response, method);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        processError(error, method);
-                    }
-                }
-
-        );
-    }
-
-
-    private void run() {
-
-        final GetDialogsMethod method = getInitialParams();
-        q.add(buildRequest(method));
-    }
-
-
 }

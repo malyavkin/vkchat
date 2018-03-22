@@ -1,25 +1,68 @@
 package Util.Downloader;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import android.util.Log;
+import android.util.SparseArray;
+
+import com.android.volley.RequestQueue;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import Persistence.Entities.Model;
+import Util.API.APIRequestBuilder;
 import Util.API.Method;
+import Util.Listener;
 
 /**
- * Created by amalyavkin on 21/03/2018.
+ * SequentialDownloader is a class used to download portions of data sequentially
+ * @param <T>
  */
+abstract class SequentialDownloader<T extends Model> extends Downloader<T> {
+    private final static String TAG = "SequentialDownloader";
 
-public abstract class SequentialDownloader<T> {
+    SequentialDownloader(RequestQueue q, APIRequestBuilder api, Listener<SparseArray<T>> listener) {
+        super(q, api, listener);
+        requestQueue.add(buildRequest(getInitialParams()));
+    }
+
+    /**
+     * @param response current response
+     * @param method   current set of parameters
+     * @return set of parameters for the next request given current parameters and response
+     * @throws JSONException {response} is JSONObject, so there's that
+     */
     abstract Method<T> getParamsForNextRequest(JSONObject response, Method<T> method) throws JSONException;
 
+    /**
+     * get initial parameters
+     *
+     * @return set of parameters for the first request
+     */
     abstract Method<T> getInitialParams();
 
-    abstract void processError(VolleyError error, Method<T> method);
+    @Override
+    void onResponseHandler(JSONObject response, Method<T> method) {
+        processResponse(response, method);
+        afterProcessResponse(response, method);
+    }
 
-    abstract JsonObjectRequest buildRequest(final Method<T> method);
+    /**
+     * @param response
+     * @param method
+     */
+    void afterProcessResponse(JSONObject response, Method<T> method) {
+        Method<T> newMethod = null;
+        try {
+            newMethod = getParamsForNextRequest(response, method);
+        } catch (JSONException e) {
+            Log.e(TAG, "Cannot get new params, finishing prematurely");
+            e.printStackTrace();
+        }
 
-    abstract void processResponse(JSONObject response, Method<T> method);
+        if (newMethod != null) {
+            requestQueue.add(buildRequest(newMethod));
+        } else {
+            onFinish();
+        }
+    }
 }
