@@ -22,7 +22,6 @@ public abstract class SequentialDownloader<T extends Model> extends Downloader<T
 
     protected SequentialDownloader(RequestQueue q, APIRequestBuilder api, Listener<SparseArray<T>> listener) {
         super(q, api, listener);
-        requestQueue.add(buildRequest(getInitialParams()));
     }
 
     /**
@@ -32,13 +31,6 @@ public abstract class SequentialDownloader<T extends Model> extends Downloader<T
      * @throws JSONException {response} is JSONObject, so there's that
      */
     protected abstract Method<T> getParamsForNextRequest(JSONObject response, Method<T> method) throws JSONException;
-
-    /**
-     * get initial parameters
-     *
-     * @return set of parameters for the first request
-     */
-    protected abstract Method<T> getInitialParams();
 
     @Override
     void onResponseHandler(JSONObject response, Method<T> method) {

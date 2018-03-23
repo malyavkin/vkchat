@@ -21,7 +21,7 @@ import Util.Listener;
  *
  * @param <T>
  */
-public class Downloader<T extends Model> {
+public abstract class Downloader<T extends Model> {
     protected final RequestQueue requestQueue;
     protected final SparseArray<T> items;
     private final APIRequestBuilder api;
@@ -69,5 +69,17 @@ public class Downloader<T extends Model> {
 
     protected void processResponse(JSONObject response, Method<T> method) {
 
+    }
+
+    /**
+     * get initial parameters
+     *
+     * @return set of parameters for the first request
+     */
+    protected abstract Method<T> getInitialParams();
+
+
+    private void run() {
+        requestQueue.add(buildRequest(getInitialParams()));
     }
 }

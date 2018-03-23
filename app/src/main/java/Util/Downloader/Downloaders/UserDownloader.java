@@ -11,16 +11,19 @@ import org.json.JSONObject;
 import Persistence.Entities.User.User;
 import Util.API.APIRequestBuilder;
 import Util.API.Method;
+import Util.API.Methods.users.GetMethod;
 import Util.Downloader.Downloader;
 import Util.Listener;
 
 public class UserDownloader extends Downloader<User> {
     private final static String TAG = "UserDownloader";
-
+    private int id;
     public UserDownloader(RequestQueue q,
                           APIRequestBuilder api,
-                          Listener<SparseArray<User>> listener) {
+                          Listener<SparseArray<User>> listener,
+                          int id) {
         super(q, api, listener);
+        this.id = id;
     }
 
     @Override
@@ -39,5 +42,10 @@ public class UserDownloader extends Downloader<User> {
             Log.e(TAG, "Cannot process response");
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected Method<User> getInitialParams() {
+        return new GetMethod(this.id);
     }
 }
