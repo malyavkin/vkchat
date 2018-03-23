@@ -2,6 +2,7 @@ package Util.API;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import Util.Constants;
@@ -17,7 +18,7 @@ public class APIRequestBuilder {
 
     public String makeRequestUrl(Method<?> m) {
         HashMap<String, String> params = m.getParams();
-        ArrayList<String> queryParams = new ArrayList<>();
+        List<String> queryParams = new ArrayList<>();
         for (Map.Entry<String, String> entry : params.entrySet()) {
 
             queryParams.add(String.format("%s=%s", entry.getKey(), entry.getValue()));

@@ -5,11 +5,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseArray;
 
 import com.android.volley.RequestQueue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
 import Adapter.ChatListAdapter;
 import Persistence.Entities.Dialog.Dialog;
@@ -25,14 +28,13 @@ public class ChatListActivity extends AppCompatActivity {
 
     private RecyclerView rv;
     private APIRequestBuilder api;
-    private SparseArray<Dialog> dialogs = new SparseArray<>();
+    private HashMap<String, Dialog> dialogs = new HashMap<>();
     private RequestQueue q;
 
-    private static <C> ArrayList<C> asList(SparseArray<C> sparseArray) {
-        if (sparseArray == null) return null;
-        ArrayList<C> arrayList = new ArrayList<>(sparseArray.size());
-        for (int i = 0; i < sparseArray.size(); i++)
-            arrayList.add(sparseArray.valueAt(i));
+    private static <C> List<C> asList(HashMap<String, C> hashMap) {
+        if (hashMap == null) return null;
+        List<C> arrayList = new ArrayList<>(hashMap.size());
+        arrayList.addAll(hashMap.values());
         return arrayList;
     }
 
@@ -40,7 +42,11 @@ public class ChatListActivity extends AppCompatActivity {
      * Обновляет вьюху новым адаптером
      */
     private void updateView() {
-        ChatListAdapter adapter = new ChatListAdapter(asList(dialogs));
+
+        List<Dialog> l = asList(dialogs);
+        Collections.sort(l, new MessageDateComparator());
+
+        ChatListAdapter adapter = new ChatListAdapter(l);
 
         if (rv.getAdapter() == null) {
             rv.setAdapter(adapter);
@@ -50,18 +56,27 @@ public class ChatListActivity extends AppCompatActivity {
     }
 
     private void bootstrapUsers() {
+        ArrayList<Integer> personIds = new ArrayList<>();
+        for (Dialog d : dialogs.values()) {
+            if (d.type.equals("chat")) {
+                personIds.add(d.entity_id);
+            }
+        }
+
         new UserDownloader(
                 q,
                 api,
-                new Listener<SparseArray<User>>() {
+                new Listener<HashMap<String, User>>() {
                     @Override
-                    public void call(SparseArray<User> param) {
+                    public void call(HashMap<String, User> param) {
+                        for (String key : param.keySet()) {
+                            dialogs.get("chat_" + key).chatTitle = param.get(key).fullname();
+                        }
                         updateView();
                     }
                 },
-                0
+                personIds
         );
-
     }
 
     /**
@@ -71,10 +86,10 @@ public class ChatListActivity extends AppCompatActivity {
         new DialogSequentialDownloader(
                 q,
                 api,
-                new Listener<SparseArray<Dialog>>() {
+                new Listener<HashMap<String, Dialog>>() {
 
                     @Override
-                    public void call(SparseArray<Dialog> newDialogs) {
+                    public void call(HashMap<String, Dialog> newDialogs) {
                         dialogs = newDialogs;
                         bootstrapUsers();
                     }
@@ -97,5 +112,12 @@ public class ChatListActivity extends AppCompatActivity {
         api = new APIRequestBuilder(token);
         q = Queue.getInstance().getQueue();
         obtainDialogs();
+    }
+}
+
+class MessageDateComparator implements Comparator<Dialog> {
+    @Override
+    public int compare(Dialog d1, Dialog d2) {
+        return d2.lastMessageDate - d1.lastMessageDate;
     }
 }

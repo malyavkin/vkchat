@@ -1,7 +1,5 @@
 package Util.API.Methods.messages;
 
-import android.util.SparseArray;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,8 +28,8 @@ public class GetDialogsMethod extends Method<Dialog> {
         return "messages.getDialogs";
     }
 
-    public SparseArray<Dialog> parseResult(JSONObject response) throws JSONException {
-        SparseArray<Dialog> dialogModels = new SparseArray<>();
+    public HashMap<String, Dialog> parseResult(JSONObject response) throws JSONException {
+        HashMap<String, Dialog> dialogModels = new HashMap<>();
         JSONObject oResponse = response.getJSONObject("response");
         JSONArray oItems = oResponse.getJSONArray("items");
 
@@ -41,15 +39,24 @@ public class GetDialogsMethod extends Method<Dialog> {
             String title = oMessage.getString("title");
             String message = oMessage.getString("body");
             int user_id = oMessage.getInt("user_id");
-            int id = oMessage.has("chat_id")
-                    ? oMessage.getInt("chat_id")
-                    : user_id;
+            int lastMessageDate = oMessage.getInt("date");
 
-            if (title.equals("")) {
-                title = "Dialog " + id;
+            int entity_id;
+            String type;
+
+            if (oMessage.has("chat_id")) {
+                type = "conf";
+                entity_id = oMessage.getInt("chat_id");
+            } else if (user_id > 0) {
+                type = "chat";
+                entity_id = user_id;
+            } else {
+                type = "community";
+                entity_id = -user_id;
             }
 
-            dialogModels.append(id, new Dialog(message, title, id));
+            Dialog d = new Dialog(type, entity_id, message, title, lastMessageDate);
+            dialogModels.put(d.id, d);
         }
 
         return dialogModels;

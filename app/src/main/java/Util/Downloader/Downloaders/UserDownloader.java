@@ -1,14 +1,15 @@
 package Util.Downloader.Downloaders;
 
 import android.util.Log;
-import android.util.SparseArray;
 
 import com.android.volley.RequestQueue;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import Persistence.Entities.User.User;
 import Util.API.APIRequestBuilder;
@@ -19,34 +20,31 @@ import Util.Listener;
 
 public class UserDownloader extends Downloader<User> {
     private final static String TAG = "UserDownloader";
-    private ArrayList<Integer> ids;
+    private List<Integer> ids;
     public UserDownloader(RequestQueue q,
                           APIRequestBuilder api,
-                          Listener<SparseArray<User>> listener,
+                          Listener<HashMap<String, User>> listener,
                           int id) {
         super(q, api, listener);
-        this.ids = new ArrayList<>();
+        this.ids = Arrays.asList(id);
         this.ids.add(id);
     }
 
     public UserDownloader(RequestQueue q,
                           APIRequestBuilder api,
-                          Listener<SparseArray<User>> listener,
-                          ArrayList<Integer> users) {
+                          Listener<HashMap<String, User>> listener,
+                          List<Integer> users) {
         super(q, api, listener);
-        this.ids = users;
+        ids = users;
+        run();
     }
 
     @Override
     protected void processResponse(JSONObject response, Method<User> method) {
 
         try {
-            SparseArray<User> newUsers = method.parseResult(response);
-
-            for (int i = 0; i < newUsers.size(); i++) {
-                int key = newUsers.keyAt(i);
-                items.append(key, newUsers.valueAt(i));
-            }
+            HashMap<String, User> newUsers = method.parseResult(response);
+            items.putAll(newUsers);
 
         } catch (JSONException e) {
             requestQueue.add(buildRequest(method));

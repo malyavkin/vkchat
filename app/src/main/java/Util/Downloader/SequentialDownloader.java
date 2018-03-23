@@ -1,12 +1,13 @@
 package Util.Downloader;
 
 import android.util.Log;
-import android.util.SparseArray;
 
 import com.android.volley.RequestQueue;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import Persistence.Entities.Model;
 import Util.API.APIRequestBuilder;
@@ -20,7 +21,7 @@ import Util.Listener;
 public abstract class SequentialDownloader<T extends Model> extends Downloader<T> {
     private final static String TAG = "SequentialDownloader";
 
-    protected SequentialDownloader(RequestQueue q, APIRequestBuilder api, Listener<SparseArray<T>> listener) {
+    protected SequentialDownloader(RequestQueue q, APIRequestBuilder api, Listener<HashMap<String, T>> listener) {
         super(q, api, listener);
     }
 

@@ -1,7 +1,5 @@
 package Util.API;
 
-import android.util.SparseArray;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,5 +18,5 @@ public abstract class Method<T> {
 
     public abstract String getMethod();
 
-    public abstract SparseArray<T> parseResult(JSONObject response) throws JSONException;
+    public abstract HashMap<String, T> parseResult(JSONObject response) throws JSONException;
 }

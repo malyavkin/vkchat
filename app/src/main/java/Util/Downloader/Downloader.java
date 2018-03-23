@@ -1,13 +1,13 @@
 package Util.Downloader;
 
-import android.util.SparseArray;
-
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import Persistence.Entities.Model;
 import Util.API.APIRequestBuilder;
@@ -23,18 +23,17 @@ import Util.Listener;
  */
 public abstract class Downloader<T extends Model> {
     protected final RequestQueue requestQueue;
-    protected final SparseArray<T> items;
+    protected final HashMap<String, T> items;
     private final APIRequestBuilder api;
-    private final Listener<SparseArray<T>> listener;
+    private final Listener<HashMap<String, T>> listener;
 
     public Downloader(RequestQueue q,
                       APIRequestBuilder api,
-                      Listener<SparseArray<T>> listener) {
+                      Listener<HashMap<String, T>> listener) {
         this.api = api;
         this.requestQueue = q;
         this.listener = listener;
-        this.items = new SparseArray<>();
-        run();
+        this.items = new HashMap<>();
     }
 
     void onFinish() {
@@ -47,6 +46,7 @@ public abstract class Downloader<T extends Model> {
 
     void onResponseHandler(JSONObject response, Method<T> method) {
         processResponse(response, method);
+        onFinish();
     }
 
     protected JsonObjectRequest buildRequest(final Method<T> method) {
@@ -68,9 +68,7 @@ public abstract class Downloader<T extends Model> {
         );
     }
 
-    protected void processResponse(JSONObject response, Method<T> method) {
-
-    }
+    protected abstract void processResponse(JSONObject response, Method<T> method);
 
     /**
      * get initial parameters
@@ -80,7 +78,7 @@ public abstract class Downloader<T extends Model> {
     protected abstract Method<T> getInitialParams();
 
 
-    private void run() {
+    protected void run() {
         requestQueue.add(buildRequest(getInitialParams()));
     }
 }

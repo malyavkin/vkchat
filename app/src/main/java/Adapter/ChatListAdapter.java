@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import Persistence.Entities.Dialog.Dialog;
 import co.lesha.vkchat.R;
@@ -14,12 +14,12 @@ import co.lesha.vkchat.R;
 
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHolder> {
 
-    private final ArrayList<Dialog> items;
+    private final List<Dialog> items;
 
     // OnBottomReachedListener -- наш класс слушателя события, когда rv достигает дна
     private OnBottomReachedListener onBottomReachedListener;
 
-    public ChatListAdapter(ArrayList<Dialog> items) {
+    public ChatListAdapter(List<Dialog> items) {
         this.items = items;
     }
 
@@ -51,7 +51,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         Dialog item = items.get(position);
         holder.chatListItem_title.setText(item.getTitle());
-        holder.chatListItem_lastMessage.setText(item.getLastMessage());
+        holder.chatListItem_lastMessage.setText(item.lastMessage);
 
         if (position == items.size() - 1){
             if (onBottomReachedListener != null) {

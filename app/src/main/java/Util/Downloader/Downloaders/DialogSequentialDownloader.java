@@ -1,12 +1,13 @@
 package Util.Downloader.Downloaders;
 
 import android.util.Log;
-import android.util.SparseArray;
 
 import com.android.volley.RequestQueue;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import Persistence.Entities.Dialog.Dialog;
 import Util.API.APIRequestBuilder;
@@ -20,8 +21,9 @@ public class DialogSequentialDownloader extends SequentialDownloader<Dialog> {
 
     public DialogSequentialDownloader(RequestQueue q,
                                       APIRequestBuilder api,
-                                      Listener<SparseArray<Dialog>> listener) {
+                                      Listener<HashMap<String, Dialog>> listener) {
         super(q, api, listener);
+        run();
     }
 
     @Override
@@ -50,12 +52,8 @@ public class DialogSequentialDownloader extends SequentialDownloader<Dialog> {
     @Override
     protected void processResponse(JSONObject response, Method<Dialog> method) {
         try {
-            SparseArray<Dialog> newDialogs = method.parseResult(response);
-
-            for (int i = 0; i < newDialogs.size(); i++) {
-                int key = newDialogs.keyAt(i);
-                items.append(key, newDialogs.valueAt(i));
-            }
+            HashMap<String, Dialog> newDialogs = method.parseResult(response);
+            items.putAll(newDialogs);
 
         } catch (JSONException e) {
             Log.e(TAG, "Cannot process response, restarting request");

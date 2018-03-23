@@ -18,4 +18,8 @@ public class User implements Model {
         this.first_name = first_name;
         this.last_name = last_name;
     }
+
+    public String fullname() {
+        return first_name + " " + last_name;
+    }
 }

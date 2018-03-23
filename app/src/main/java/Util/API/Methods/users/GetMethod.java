@@ -1,7 +1,6 @@
 package Util.API.Methods.users;
 
-import android.util.SparseArray;
-
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,13 +14,22 @@ public class GetMethod extends Method<User> {
 
     public GetMethod(int id) {
         params = new HashMap<>();
-        params.put("id", String.valueOf(id));
+        params.put("user_ids", String.valueOf(id));
     }
 
-    public GetMethod(List<Integer> id) {
+    public GetMethod(List<Integer> ids) {
         params = new HashMap<>();
         //TODO: this
-        params.put("id", "TODO");
+
+        StringBuilder idsString = new StringBuilder();
+        for (Integer id : ids) {
+            if (idsString.length() > 0) {
+                idsString.append(",");
+            }
+            idsString.append(id);
+        }
+
+        params.put("user_ids", idsString.toString());
     }
 
     @Override
@@ -30,8 +38,23 @@ public class GetMethod extends Method<User> {
     }
 
     @Override
-    public SparseArray<User> parseResult(JSONObject response) throws JSONException {
-        return null;
+    public HashMap<String, User> parseResult(JSONObject response) throws JSONException {
+        HashMap<String, User> users = new HashMap<>();
+
+        JSONArray oResponse = response.getJSONArray("response");
+        for (int i = 0; i < oResponse.length(); i++) {
+            JSONObject oUser = oResponse.getJSONObject(i);
+
+            User u = new User(
+                    oUser.getInt("id"),
+                    oUser.getString("first_name"),
+                    oUser.getString("last_name")
+            );
+            users.put(oUser.getString("id"), u);
+
+        }
+
+        return users;
     }
 
 
