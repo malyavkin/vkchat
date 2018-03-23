@@ -40,9 +40,10 @@ public class GetDialogsMethod extends Method<Dialog> {
             JSONObject oMessage = oItem.getJSONObject("message");
             String title = oMessage.getString("title");
             String message = oMessage.getString("body");
+            int user_id = oMessage.getInt("user_id");
             int id = oMessage.has("chat_id")
                     ? oMessage.getInt("chat_id")
-                    : oMessage.getInt("user_id");
+                    : user_id;
 
             if (title.equals("")) {
                 title = "Dialog " + id;

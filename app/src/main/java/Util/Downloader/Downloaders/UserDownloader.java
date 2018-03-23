@@ -8,6 +8,8 @@ import com.android.volley.RequestQueue;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import Persistence.Entities.User.User;
 import Util.API.APIRequestBuilder;
 import Util.API.Method;
@@ -17,13 +19,22 @@ import Util.Listener;
 
 public class UserDownloader extends Downloader<User> {
     private final static String TAG = "UserDownloader";
-    private int id;
+    private ArrayList<Integer> ids;
     public UserDownloader(RequestQueue q,
                           APIRequestBuilder api,
                           Listener<SparseArray<User>> listener,
                           int id) {
         super(q, api, listener);
-        this.id = id;
+        this.ids = new ArrayList<>();
+        this.ids.add(id);
+    }
+
+    public UserDownloader(RequestQueue q,
+                          APIRequestBuilder api,
+                          Listener<SparseArray<User>> listener,
+                          ArrayList<Integer> users) {
+        super(q, api, listener);
+        this.ids = users;
     }
 
     @Override
@@ -46,6 +57,6 @@ public class UserDownloader extends Downloader<User> {
 
     @Override
     protected Method<User> getInitialParams() {
-        return new GetMethod(this.id);
+        return new GetMethod(this.ids);
     }
 }

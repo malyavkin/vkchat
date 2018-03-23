@@ -25,12 +25,12 @@ public class DialogSequentialDownloader extends SequentialDownloader<Dialog> {
     }
 
     @Override
-    public GetDialogsMethod getInitialParams() {
+    protected GetDialogsMethod getInitialParams() {
         return new GetDialogsMethod(0, 10, false);
     }
 
     @Override
-    public GetDialogsMethod getParamsForNextRequest(JSONObject response, Method<Dialog> method) throws JSONException {
+    protected GetDialogsMethod getParamsForNextRequest(JSONObject response, Method<Dialog> method) throws JSONException {
         final int count = 10;
         final boolean unreadOnly = false;
 
@@ -42,6 +42,7 @@ public class DialogSequentialDownloader extends SequentialDownloader<Dialog> {
         if (newOffset >= totalDialogs) {
             return null;
         }
+        Log.d(TAG, "Downloading dialogs" + String.valueOf(newOffset) + " +> " + String.valueOf(count));
         return new GetDialogsMethod(newOffset, count, unreadOnly);
 
     }

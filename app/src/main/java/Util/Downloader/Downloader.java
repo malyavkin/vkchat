@@ -34,6 +34,7 @@ public abstract class Downloader<T extends Model> {
         this.requestQueue = q;
         this.listener = listener;
         this.items = new SparseArray<>();
+        run();
     }
 
     void onFinish() {
