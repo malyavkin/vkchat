@@ -13,19 +13,19 @@ import Adapter.ChatListAdapter;
 import Persistence.Entities.Dialog.Dialog;
 import Util.API.APIRequestBuilder;
 import Util.Constants;
-import Util.Downloader.DialogSequentialDownloader;
+import Util.Downloader.Downloaders.DialogSequentialDownloader;
 import Util.Listener;
 import Util.Network.Queue;
 
 public class ChatListActivity extends AppCompatActivity {
 
-    RecyclerView rv;
-    APIRequestBuilder api;
-    SparseArray<Dialog> dialogs = new SparseArray<>();
+    private RecyclerView rv;
+    private APIRequestBuilder api;
+    private SparseArray<Dialog> dialogs = new SparseArray<>();
 
-    public static <C> ArrayList<C> asList(SparseArray<C> sparseArray) {
+    private static <C> ArrayList<C> asList(SparseArray<C> sparseArray) {
         if (sparseArray == null) return null;
-        ArrayList<C> arrayList = new ArrayList<C>(sparseArray.size());
+        ArrayList<C> arrayList = new ArrayList<>(sparseArray.size());
         for (int i = 0; i < sparseArray.size(); i++)
             arrayList.add(sparseArray.valueAt(i));
         return arrayList;
@@ -34,8 +34,8 @@ public class ChatListActivity extends AppCompatActivity {
     /**
      * Обновляет вьюху новым адаптером
      */
-    void updateView() {
-        ChatListAdapter adapter = new ChatListAdapter(this, asList(dialogs));
+    private void updateView() {
+        ChatListAdapter adapter = new ChatListAdapter(asList(dialogs));
 
         if (rv.getAdapter() == null) {
             rv.setAdapter(adapter);
@@ -47,7 +47,7 @@ public class ChatListActivity extends AppCompatActivity {
     /**
      *
      */
-    void obtainDialogs() {
+    private void obtainDialogs() {
         new DialogSequentialDownloader(
                 Queue.getInstance().getQueue(),
                 api,

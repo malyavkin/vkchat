@@ -20,7 +20,6 @@ public class OAuthActivity extends AppCompatActivity {
     private static final String PREFS_OAUTH_TOKEN = "access_token";
     private static final String PREFS_OAUTH_EXPIRES_IN = "expires_in";
     private static final String PREFS_OAUTH_EXPIRY = "validUntil";
-    WebView wv;
     private SharedPreferences sharedPreferences;
 
 
@@ -87,7 +86,7 @@ public class OAuthActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_oauth);
-        wv = findViewById(R.id.oauth_webview);
+        WebView wv = findViewById(R.id.oauth_webview);
         wv.loadUrl(getOauthUrl());
         wv.setWebViewClient(new WebViewClient() {
             @Override

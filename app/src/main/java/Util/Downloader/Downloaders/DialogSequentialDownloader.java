@@ -1,4 +1,4 @@
-package Util.Downloader;
+package Util.Downloader.Downloaders;
 
 import android.util.Log;
 import android.util.SparseArray;
@@ -12,11 +12,8 @@ import Persistence.Entities.Dialog.Dialog;
 import Util.API.APIRequestBuilder;
 import Util.API.Method;
 import Util.API.Methods.messages.GetDialogsMethod;
+import Util.Downloader.SequentialDownloader;
 import Util.Listener;
-
-/**
- * Created by amalyavkin on 21/03/2018.
- */
 
 public class DialogSequentialDownloader extends SequentialDownloader<Dialog> {
     private final static String TAG = "DialogSeqDl";
@@ -28,12 +25,12 @@ public class DialogSequentialDownloader extends SequentialDownloader<Dialog> {
     }
 
     @Override
-    GetDialogsMethod getInitialParams() {
+    public GetDialogsMethod getInitialParams() {
         return new GetDialogsMethod(0, 10, false);
     }
 
     @Override
-    GetDialogsMethod getParamsForNextRequest(JSONObject response, Method<Dialog> method) throws JSONException {
+    public GetDialogsMethod getParamsForNextRequest(JSONObject response, Method<Dialog> method) throws JSONException {
         final int count = 10;
         final boolean unreadOnly = false;
 
@@ -50,7 +47,7 @@ public class DialogSequentialDownloader extends SequentialDownloader<Dialog> {
     }
 
     @Override
-    void processResponse(JSONObject response, Method<Dialog> method) {
+    protected void processResponse(JSONObject response, Method<Dialog> method) {
         try {
             SparseArray<Dialog> newDialogs = method.parseResult(response);
 

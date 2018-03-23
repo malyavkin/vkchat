@@ -2,4 +2,5 @@
     <string name="app_name">vkchat</string>
     <string name="login">LoginString</string>
     <string name="app_icon">App icon</string>
+    <string name="chat_title">chat title</string>
 </resources>

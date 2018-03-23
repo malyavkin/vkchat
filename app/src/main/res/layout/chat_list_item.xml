@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="wrap_content" android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/chatListItem_image"
@@ -10,7 +11,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_margin="8dp"
-        android:contentDescription="chat title"
+        android:contentDescription="@string/chat_title"
         app:srcCompat="@mipmap/ic_launcher_round" />
 
     <TextView
@@ -20,7 +21,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/chatListItem_image"
         android:layout_toEndOf="@+id/chatListItem_image"
-        android:text="Chat Title"
+        android:text="@string/chat_title"
         android:textSize="18sp"
         android:textStyle="bold" />
 

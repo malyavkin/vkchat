@@ -1,4 +1,4 @@
-package Util.API.Methods.messages;
+package Util.API.Methods.users;
 
 import android.util.SparseArray;
 
@@ -10,21 +10,11 @@ import java.util.HashMap;
 import Persistence.Entities.User.User;
 import Util.API.Method;
 
-/**
- * Created by lich on 2018-03-20.
- */
-
 public class GetMethod extends Method<User> {
-    private HashMap<String, String> params;
 
     public GetMethod(int id) {
         params = new HashMap<>();
         params.put("id", String.valueOf(id));
-    }
-
-    @Override
-    public HashMap<String, String> getParams() {
-        return params;
     }
 
     @Override

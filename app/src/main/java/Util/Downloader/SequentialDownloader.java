@@ -17,10 +17,10 @@ import Util.Listener;
  * SequentialDownloader is a class used to download portions of data sequentially
  * @param <T>
  */
-abstract class SequentialDownloader<T extends Model> extends Downloader<T> {
+public abstract class SequentialDownloader<T extends Model> extends Downloader<T> {
     private final static String TAG = "SequentialDownloader";
 
-    SequentialDownloader(RequestQueue q, APIRequestBuilder api, Listener<SparseArray<T>> listener) {
+    protected SequentialDownloader(RequestQueue q, APIRequestBuilder api, Listener<SparseArray<T>> listener) {
         super(q, api, listener);
         requestQueue.add(buildRequest(getInitialParams()));
     }
@@ -31,14 +31,14 @@ abstract class SequentialDownloader<T extends Model> extends Downloader<T> {
      * @return set of parameters for the next request given current parameters and response
      * @throws JSONException {response} is JSONObject, so there's that
      */
-    abstract Method<T> getParamsForNextRequest(JSONObject response, Method<T> method) throws JSONException;
+    protected abstract Method<T> getParamsForNextRequest(JSONObject response, Method<T> method) throws JSONException;
 
     /**
      * get initial parameters
      *
      * @return set of parameters for the first request
      */
-    abstract Method<T> getInitialParams();
+    protected abstract Method<T> getInitialParams();
 
     @Override
     void onResponseHandler(JSONObject response, Method<T> method) {
@@ -50,7 +50,7 @@ abstract class SequentialDownloader<T extends Model> extends Downloader<T> {
      * @param response
      * @param method
      */
-    void afterProcessResponse(JSONObject response, Method<T> method) {
+    private void afterProcessResponse(JSONObject response, Method<T> method) {
         Method<T> newMethod = null;
         try {
             newMethod = getParamsForNextRequest(response, method);

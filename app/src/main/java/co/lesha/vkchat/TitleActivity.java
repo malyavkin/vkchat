@@ -10,8 +10,6 @@ import Util.Startup;
 
 public class TitleActivity extends AppCompatActivity {
 
-    Button loginButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,7 +17,7 @@ public class TitleActivity extends AppCompatActivity {
 
         new Startup(getApplicationContext());
 
-        loginButton = findViewById(R.id.title_login);
+        Button loginButton = findViewById(R.id.title_login);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

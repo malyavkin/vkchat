@@ -21,15 +21,15 @@ import Util.Listener;
  *
  * @param <T>
  */
-class Downloader<T extends Model> {
-    RequestQueue requestQueue;
-    SparseArray<T> items;
-    private APIRequestBuilder api;
-    private Listener<SparseArray<T>> listener;
+public class Downloader<T extends Model> {
+    protected final RequestQueue requestQueue;
+    protected final SparseArray<T> items;
+    private final APIRequestBuilder api;
+    private final Listener<SparseArray<T>> listener;
 
-    Downloader(RequestQueue q,
-               APIRequestBuilder api,
-               Listener<SparseArray<T>> listener) {
+    public Downloader(RequestQueue q,
+                      APIRequestBuilder api,
+                      Listener<SparseArray<T>> listener) {
         this.api = api;
         this.requestQueue = q;
         this.listener = listener;
@@ -48,7 +48,7 @@ class Downloader<T extends Model> {
         processResponse(response, method);
     }
 
-    JsonObjectRequest buildRequest(final Method<T> method) {
+    protected JsonObjectRequest buildRequest(final Method<T> method) {
         String s = api.makeRequestUrl(method);
         return new JsonObjectRequest(s, null,
                 new Response.Listener<JSONObject>() {
@@ -67,7 +67,7 @@ class Downloader<T extends Model> {
         );
     }
 
-    void processResponse(JSONObject response, Method<T> method) {
+    protected void processResponse(JSONObject response, Method<T> method) {
 
     }
 }

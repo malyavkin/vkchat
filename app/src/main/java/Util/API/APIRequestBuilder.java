@@ -8,33 +8,33 @@ import Util.Constants;
 
 
 public class APIRequestBuilder {
-    private String key;
+    private final String key;
 
     public APIRequestBuilder(String key) {
         this.key = key;
     }
 
 
-    public String makeRequestUrl(Method m) {
+    public String makeRequestUrl(Method<?> m) {
+        HashMap<String, String> params = m.getParams();
         ArrayList<String> queryParams = new ArrayList<>();
-        HashMap<String, String> pairs = m.getParams();
-        for (Map.Entry<String, String> entry : pairs.entrySet()) {
+        for (Map.Entry<String, String> entry : params.entrySet()) {
 
             queryParams.add(String.format("%s=%s", entry.getKey(), entry.getValue()));
         }
 
-        StringBuilder params = new StringBuilder();
+        StringBuilder queryString = new StringBuilder();
         for (String item : queryParams) {
-            if (params.length() > 0) {
-                params.append("&");
+            if (queryString.length() > 0) {
+                queryString.append("&");
             }
-            params.append(item);
+            queryString.append(item);
         }
 
         return String.format("%s/method/%s?%s&access_token=%s&v=%s",
                 Constants.API_DOMAIN,
                 m.getMethod(),
-                params.toString(),
+                queryString.toString(),
                 this.key,
                 Constants.API_V);
 

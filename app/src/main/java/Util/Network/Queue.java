@@ -5,10 +5,6 @@ import android.content.Context;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
-/**
- * Created by amalyavkin on 23/03/2018.
- */
-
 public class Queue {
     private static final Queue ourInstance = new Queue();
 

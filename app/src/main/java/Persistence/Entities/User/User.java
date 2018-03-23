@@ -9,9 +9,9 @@ import Persistence.Entities.Model;
 public class User implements Model {
 
     @PrimaryKey
-    public int id;
-    public String first_name;
-    public String last_name;
+    public final int id;
+    public final String first_name;
+    public final String last_name;
 
     public User(int id, String first_name, String last_name) {
         this.id = id;

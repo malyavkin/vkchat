@@ -11,13 +11,8 @@ import java.util.HashMap;
 import Persistence.Entities.Dialog.Dialog;
 import Util.API.Method;
 
-/**
- * Created by lich on 2018-03-20.
- */
-
 public class GetDialogsMethod extends Method<Dialog> {
     private final static String TAG = "GetDialogsMethod";
-    private HashMap<String, String> params;
 
     public GetDialogsMethod(int offset, int count, boolean unreadOnly) {
 
@@ -28,11 +23,6 @@ public class GetDialogsMethod extends Method<Dialog> {
             params.put("unread", "1");
         }
 
-    }
-
-    @Override
-    public HashMap<String, String> getParams() {
-        return this.params;
     }
 
     @Override

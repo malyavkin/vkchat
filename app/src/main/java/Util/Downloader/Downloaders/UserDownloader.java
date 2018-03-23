@@ -1,4 +1,4 @@
-package Util.Downloader;
+package Util.Downloader.Downloaders;
 
 import android.util.Log;
 import android.util.SparseArray;
@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import Persistence.Entities.User.User;
 import Util.API.APIRequestBuilder;
 import Util.API.Method;
+import Util.Downloader.Downloader;
 import Util.Listener;
 
 public class UserDownloader extends Downloader<User> {
@@ -23,7 +24,7 @@ public class UserDownloader extends Downloader<User> {
     }
 
     @Override
-    void processResponse(JSONObject response, Method<User> method) {
+    protected void processResponse(JSONObject response, Method<User> method) {
 
         try {
             SparseArray<User> newUsers = method.parseResult(response);

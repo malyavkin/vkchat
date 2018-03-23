@@ -1,6 +1,5 @@
 package Adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,15 +14,13 @@ import co.lesha.vkchat.R;
 
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHolder> {
 
-    Context context;
-    ArrayList<Dialog> items;
+    private final ArrayList<Dialog> items;
 
     // OnBottomReachedListener -- наш класс слушателя события, когда rv достигает дна
     private OnBottomReachedListener onBottomReachedListener;
 
-    public ChatListAdapter(Context context, ArrayList<Dialog> items) {
+    public ChatListAdapter(ArrayList<Dialog> items) {
         this.items = items;
-        this.context = context;
     }
 
     public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener){
@@ -69,7 +66,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView chatListItem_title, chatListItem_lastMessage;
+        final TextView chatListItem_title;
+        final TextView chatListItem_lastMessage;
 
         /**
          * ViewHolder занимается склейкой нашего RecyclerView и его дочерних элементов.
