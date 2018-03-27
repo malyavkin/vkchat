@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.android.volley.RequestQueue;
 
@@ -25,11 +26,12 @@ import Util.Listener;
 import Util.Network.Queue;
 
 public class ChatListActivity extends AppCompatActivity {
-
+    private static String TAG = "ChatListActivity";
     private RecyclerView rv;
     private APIRequestBuilder api;
     private HashMap<String, Dialog> dialogs = new HashMap<>();
     private RequestQueue q;
+    private Listener<Dialog> onDialogItemClickListener;
 
     private static <C> List<C> asList(HashMap<String, C> hashMap) {
         if (hashMap == null) return null;
@@ -43,10 +45,10 @@ public class ChatListActivity extends AppCompatActivity {
      */
     private void updateView() {
 
-        List<Dialog> l = asList(dialogs);
-        Collections.sort(l, new MessageDateComparator());
+        List<Dialog> sortedDialogs = asList(dialogs);
+        Collections.sort(sortedDialogs, new MessageDateComparator());
 
-        ChatListAdapter adapter = new ChatListAdapter(l);
+        ChatListAdapter adapter = new ChatListAdapter(sortedDialogs, onDialogItemClickListener);
 
         if (rv.getAdapter() == null) {
             rv.setAdapter(adapter);
@@ -98,6 +100,10 @@ public class ChatListActivity extends AppCompatActivity {
 
     }
 
+    private void onDialogItemClick(Dialog d) {
+        Log.d(TAG, "Hello " + d.chatTitle + String.valueOf(d.entity_id));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -111,6 +117,14 @@ public class ChatListActivity extends AppCompatActivity {
         String token = I.getStringExtra(Constants.TOKEN);
         api = new APIRequestBuilder(token);
         q = Queue.getInstance().getQueue();
+
+        onDialogItemClickListener = new Listener<Dialog>() {
+            @Override
+            public void call(Dialog param) {
+                onDialogItemClick(param);
+            }
+        };
+
         obtainDialogs();
     }
 }

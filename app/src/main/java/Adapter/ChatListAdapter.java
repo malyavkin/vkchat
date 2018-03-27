@@ -9,6 +9,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import Persistence.Entities.Dialog.Dialog;
+import Util.Listener;
 import co.lesha.vkchat.R;
 
 
@@ -18,13 +19,31 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
 
     // OnBottomReachedListener -- наш класс слушателя события, когда rv достигает дна
     private OnBottomReachedListener onBottomReachedListener;
+    private Listener<Dialog> callback;
+    private View.OnClickListener onDialogItemClickListener;
 
-    public ChatListAdapter(List<Dialog> items) {
+    public ChatListAdapter(final List<Dialog> items, Listener<Dialog> listener) {
         this.items = items;
+        setOnClickListener(listener);
+
+        onDialogItemClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) v.getLayoutParams();
+                int position = lp.getViewAdapterPosition();
+                if (callback != null) {
+                    callback.call(items.get(position));
+                }
+            }
+        };
     }
 
     public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener){
         this.onBottomReachedListener = onBottomReachedListener;
+    }
+
+    private void setOnClickListener(Listener<Dialog> listener) {
+        this.callback = listener;
     }
 
     /**
@@ -36,10 +55,12 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
      */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(
-                LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.chat_list_item,parent,false)
-        );
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.chat_list_item, parent, false);
+
+        v.setOnClickListener(onDialogItemClickListener);
+
+        return new ViewHolder(v);
     }
 
     /**
