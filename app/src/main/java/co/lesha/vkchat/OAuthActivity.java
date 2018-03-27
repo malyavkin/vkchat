@@ -69,23 +69,7 @@ public class OAuthActivity extends AppCompatActivity {
         finish();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        sharedPreferences = getSharedPreferences(PREFS_OAUTH, Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString(PREFS_OAUTH_TOKEN, "");
-
-        if (!token.equals("")) {
-            // check for expiration;
-            Long tsLong = System.currentTimeMillis()/1000;
-            Long validUntil = sharedPreferences.getLong(PREFS_OAUTH_EXPIRY, 0);
-            if (tsLong < validUntil) {
-                goToChatList(token);
-                return;
-            }
-        }
-
-        setContentView(R.layout.activity_oauth);
+    void obtainToken() {
         WebView wv = findViewById(R.id.oauth_webview);
         wv.loadUrl(getOauthUrl());
         wv.setWebViewClient(new WebViewClient() {
@@ -100,5 +84,26 @@ public class OAuthActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        sharedPreferences = getSharedPreferences(PREFS_OAUTH, Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString(PREFS_OAUTH_TOKEN, "");
+        setContentView(R.layout.activity_oauth);
+
+        if (!token.equals("")) {
+            // check for expiration;
+            Long tsLong = System.currentTimeMillis() / 1000;
+            Long validUntil = sharedPreferences.getLong(PREFS_OAUTH_EXPIRY, 0);
+            if (tsLong < validUntil) {
+                goToChatList(token);
+            } else {
+                obtainToken();
+            }
+        } else {
+            obtainToken();
+        }
     }
 }

@@ -12,17 +12,17 @@ import Util.API.Method;
 
 public class GetMethod extends Method<User> {
 
-    public GetMethod(int id) {
+    public GetMethod(String id) {
         params = new HashMap<>();
-        params.put("user_ids", String.valueOf(id));
+        params.put("user_ids", id);
     }
 
-    public GetMethod(List<Integer> ids) {
+    public GetMethod(List<String> ids) {
         params = new HashMap<>();
         //TODO: this
 
         StringBuilder idsString = new StringBuilder();
-        for (Integer id : ids) {
+        for (String id : ids) {
             if (idsString.length() > 0) {
                 idsString.append(",");
             }

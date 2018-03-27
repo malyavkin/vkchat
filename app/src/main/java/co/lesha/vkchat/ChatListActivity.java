@@ -17,6 +17,7 @@ import java.util.List;
 
 import Adapter.ChatListAdapter;
 import Persistence.Entities.Dialog.Dialog;
+import Persistence.Entities.Dialog.DialogType;
 import Persistence.Entities.User.User;
 import Util.API.APIRequestBuilder;
 import Util.Constants;
@@ -32,6 +33,7 @@ public class ChatListActivity extends AppCompatActivity {
     private HashMap<String, Dialog> dialogs = new HashMap<>();
     private RequestQueue q;
     private Listener<Dialog> onDialogItemClickListener;
+    private String token;
 
     private static <C> List<C> asList(HashMap<String, C> hashMap) {
         if (hashMap == null) return null;
@@ -58,9 +60,9 @@ public class ChatListActivity extends AppCompatActivity {
     }
 
     private void bootstrapUsers() {
-        ArrayList<Integer> personIds = new ArrayList<>();
+        ArrayList<String> personIds = new ArrayList<>();
         for (Dialog d : dialogs.values()) {
-            if (d.type.equals("chat")) {
+            if (d.type == DialogType.PERSON) {
                 personIds.add(d.entity_id);
             }
         }
@@ -72,7 +74,8 @@ public class ChatListActivity extends AppCompatActivity {
                     @Override
                     public void call(HashMap<String, User> param) {
                         for (String key : param.keySet()) {
-                            dialogs.get("chat_" + key).chatTitle = param.get(key).fullname();
+                            String fullname = param.get(key).fullname();
+                            dialogs.get(DialogType.PERSON + "_" + key).chatTitle = fullname;
                         }
                         updateView();
                     }
@@ -102,6 +105,11 @@ public class ChatListActivity extends AppCompatActivity {
 
     private void onDialogItemClick(Dialog d) {
         Log.d(TAG, "Hello " + d.chatTitle + String.valueOf(d.entity_id));
+        Intent I = new Intent(ChatListActivity.this, DialogActivity.class);
+        I.putExtra(Constants.TOKEN, token);
+        I.putExtra("type", d.type.toString());
+        I.putExtra("id", d.entity_id);
+        startActivity(I);
     }
 
     @Override
@@ -114,7 +122,7 @@ public class ChatListActivity extends AppCompatActivity {
         rv.setLayoutManager(new LinearLayoutManager(this));
 
         Intent I = getIntent();
-        String token = I.getStringExtra(Constants.TOKEN);
+        token = I.getStringExtra(Constants.TOKEN);
         api = new APIRequestBuilder(token);
         q = Queue.getInstance().getQueue();
 

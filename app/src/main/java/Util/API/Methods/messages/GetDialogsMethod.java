@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 import Persistence.Entities.Dialog.Dialog;
+import Persistence.Entities.Dialog.DialogType;
 import Util.API.Method;
 
 public class GetDialogsMethod extends Method<Dialog> {
@@ -41,18 +42,18 @@ public class GetDialogsMethod extends Method<Dialog> {
             int user_id = oMessage.getInt("user_id");
             int lastMessageDate = oMessage.getInt("date");
 
-            int entity_id;
-            String type;
+            String entity_id;
+            DialogType type;
 
             if (oMessage.has("chat_id")) {
-                type = "conf";
-                entity_id = oMessage.getInt("chat_id");
+                type = DialogType.CONF;
+                entity_id = oMessage.getString("chat_id");
             } else if (user_id > 0) {
-                type = "chat";
-                entity_id = user_id;
+                type = DialogType.PERSON;
+                entity_id = String.valueOf(user_id);
             } else {
-                type = "community";
-                entity_id = -user_id;
+                type = DialogType.COMMUNITY;
+                entity_id = String.valueOf(-user_id);
             }
 
             Dialog d = new Dialog(type, entity_id, message, title, lastMessageDate);

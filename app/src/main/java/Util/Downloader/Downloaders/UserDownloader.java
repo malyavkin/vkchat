@@ -20,11 +20,11 @@ import Util.Listener;
 
 public class UserDownloader extends Downloader<User> {
     private final static String TAG = "UserDownloader";
-    private List<Integer> ids;
+    private List<String> ids;
     public UserDownloader(RequestQueue q,
                           APIRequestBuilder api,
                           Listener<HashMap<String, User>> listener,
-                          int id) {
+                          String id) {
         super(q, api, listener);
         this.ids = Arrays.asList(id);
         this.ids.add(id);
@@ -33,7 +33,7 @@ public class UserDownloader extends Downloader<User> {
     public UserDownloader(RequestQueue q,
                           APIRequestBuilder api,
                           Listener<HashMap<String, User>> listener,
-                          List<Integer> users) {
+                          List<String> users) {
         super(q, api, listener);
         ids = users;
         run();

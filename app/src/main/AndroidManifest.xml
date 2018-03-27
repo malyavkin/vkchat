@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".OAuthActivity" />
-        <activity android:name=".ChatListActivity"/>
+        <activity android:name=".ChatListActivity" />
+        <activity android:name=".DialogActivity"></activity>
     </application>
 
 </manifest>

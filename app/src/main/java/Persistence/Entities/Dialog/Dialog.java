@@ -2,6 +2,7 @@ package Persistence.Entities.Dialog;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
 import Persistence.Entities.Model;
@@ -14,8 +15,9 @@ public class Dialog implements Model {
     // совмещенный
     public String id;
 
-    public String type;
-    public int entity_id;
+    @TypeConverters(DialogTypeConverter.class)
+    public DialogType type;
+    public String entity_id;
     public String chatTitle;
     public int lastMessageDate;
 
@@ -24,7 +26,11 @@ public class Dialog implements Model {
     public String photo_100;
 
 
-    public Dialog(String type, int entity_id, String lastMessage, String chatTitle, int lastMessageDate) {
+    public Dialog(DialogType type,
+                  String entity_id,
+                  String lastMessage,
+                  String chatTitle,
+                  int lastMessageDate) {
         this.lastMessage = lastMessage;
         this.lastMessageDate = lastMessageDate;
 
