@@ -35,6 +35,5 @@
         android:layout_below="@+id/chatListItem_title"
         android:layout_toEndOf="@+id/chatListItem_image"
         android:ellipsize="none"
-        android:maxLines="3"
-        android:text="Last message. Can be as long as you want since it's multiline. Also ellipsis should work for extra long text messages. I mean it's 130 characters." />
+        android:maxLines="3" />
 </RelativeLayout>

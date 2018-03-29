@@ -5,7 +5,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class GroupDownloader extends Downloader<Group> {
                            Listener<HashMap<String, Group>> listener,
                            String id) {
         super(api, listener);
-        this.ids = Arrays.asList(id);
+        this.ids = Collections.singletonList(id);
         this.ids.add(id);
     }
 

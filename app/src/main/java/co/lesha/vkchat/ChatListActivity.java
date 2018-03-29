@@ -16,6 +16,7 @@ import java.util.List;
 import Adapter.ChatListAdapter;
 import Persistence.Entities.Dialog.Dialog;
 import Persistence.Entities.Dialog.DialogType;
+import Persistence.Entities.Group.Group;
 import Persistence.Entities.User.User;
 import Util.API.APIRequestBuilder;
 import Util.Constants;
@@ -42,7 +43,7 @@ public class ChatListActivity extends AppCompatActivity {
      * Обновляет вьюху новым адаптером
      */
     private void updateView() {
-
+        Log.d(TAG, "Updating view");
         List<Dialog> sortedDialogs = asList(dialogs);
         Collections.sort(sortedDialogs, new MessageDateComparator());
 
@@ -53,6 +54,25 @@ public class ChatListActivity extends AppCompatActivity {
         } else {
             rv.swapAdapter(adapter, false);
         }
+    }
+
+    private void bootstrapGroups() {
+        ArrayList<String> ids = new ArrayList<>();
+        for (Dialog d : dialogs.values()) {
+            if (d.type == DialogType.COMMUNITY) {
+                ids.add(d.entity_id);
+            }
+        }
+
+        Service.getInstance().getNameCache().getGroups(ids, new Listener<HashMap<String, Group>>() {
+            @Override
+            public void call(HashMap<String, Group> param) {
+                for (String key : param.keySet()) {
+                    dialogs.get(DialogType.COMMUNITY + "_" + key).chatTitle = param.get(key).name;
+                }
+                updateView();
+            }
+        });
     }
 
     private void bootstrapUsers() {
@@ -67,10 +87,9 @@ public class ChatListActivity extends AppCompatActivity {
             @Override
             public void call(HashMap<String, User> param) {
                 for (String key : param.keySet()) {
-                    String fullname = param.get(key).fullname();
-                    dialogs.get(DialogType.PERSON + "_" + key).chatTitle = fullname;
+                    dialogs.get(DialogType.PERSON + "_" + key).chatTitle = param.get(key).fullname();
                 }
-                updateView();
+                bootstrapGroups();
             }
         });
     }
@@ -99,6 +118,7 @@ public class ChatListActivity extends AppCompatActivity {
         I.putExtra(Constants.TOKEN, token);
         I.putExtra("type", d.type.toString());
         I.putExtra("id", d.entity_id);
+        I.putExtra("Serialized", d.toString());
         startActivity(I);
     }
 

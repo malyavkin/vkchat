@@ -8,6 +8,7 @@ import android.widget.TextView;
 import java.util.HashMap;
 
 import Persistence.Entities.Dialog.DialogType;
+import Persistence.Entities.Group.Group;
 import Persistence.Entities.User.User;
 import Util.API.APIRequestBuilder;
 import Util.Constants;
@@ -36,13 +37,25 @@ public class DialogActivity extends AppCompatActivity {
         text_type.setText(type.toString());
         TextView text_id = findViewById(R.id.text_id);
         text_id.setText(id);
-        if (type == DialogType.PERSON) {
-            Service.getInstance().getNameCache().getUser(id, new Listener<HashMap<String, User>>() {
-                @Override
-                public void call(HashMap<String, User> param) {
-                    setTitle(param.get(id).fullname());
-                }
-            });
+
+        switch (type) {
+            case CONF:
+                break;
+            case PERSON:
+                Service.getInstance().getNameCache().getUser(id, new Listener<HashMap<String, User>>() {
+                    @Override
+                    public void call(HashMap<String, User> param) {
+                        setTitle(param.get(id).fullname());
+                    }
+                });
+                break;
+            case COMMUNITY:
+                Service.getInstance().getNameCache().getGroup(id, new Listener<HashMap<String, Group>>() {
+                    @Override
+                    public void call(HashMap<String, Group> param) {
+                        setTitle(param.get(id).name);
+                    }
+                });
         }
 
     }

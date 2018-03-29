@@ -29,7 +29,7 @@ public class GetById extends Method<Group> {
             idsString.append(id);
         }
 
-        params.put("user_ids", idsString.toString());
+        params.put("group_ids", idsString.toString());
     }
 
     @Override

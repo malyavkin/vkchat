@@ -1,7 +1,7 @@
 package Util.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class NameCache {
     }
 
     public void getGroup(String groupId, final Listener<HashMap<String, Group>> callback) {
-        getGroups(Arrays.asList(groupId), callback);
+        getGroups(Collections.singletonList(groupId), callback);
     }
 
     public void getGroups(List<String> groupIds, final Listener<HashMap<String, Group>> callback) {
@@ -61,7 +61,7 @@ public class NameCache {
 
 
     public void getUser(String personId, final Listener<HashMap<String, User>> callback) {
-        getUsers(Arrays.asList(personId), callback);
+        getUsers(Collections.singletonList(personId), callback);
     }
 
     public void getUsers(List<String> personIds, final Listener<HashMap<String, User>> callback) {
