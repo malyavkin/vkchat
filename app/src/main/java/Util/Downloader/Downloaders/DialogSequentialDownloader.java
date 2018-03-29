@@ -2,8 +2,6 @@ package Util.Downloader.Downloaders;
 
 import android.util.Log;
 
-import com.android.volley.RequestQueue;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,10 +17,9 @@ import Util.Listener;
 public class DialogSequentialDownloader extends SequentialDownloader<Dialog> {
     private final static String TAG = "DialogSeqDl";
 
-    public DialogSequentialDownloader(RequestQueue q,
-                                      APIRequestBuilder api,
+    public DialogSequentialDownloader(APIRequestBuilder api,
                                       Listener<HashMap<String, Dialog>> listener) {
-        super(q, api, listener);
+        super(api, listener);
         run();
     }
 

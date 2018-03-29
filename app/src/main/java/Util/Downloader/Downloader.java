@@ -13,6 +13,7 @@ import Persistence.Entities.Model;
 import Util.API.APIRequestBuilder;
 import Util.API.Method;
 import Util.Listener;
+import Util.Service.Service;
 
 /**
  * Downloader is a class that talks to request queue and decides what to do
@@ -27,11 +28,10 @@ public abstract class Downloader<T extends Model> {
     private final APIRequestBuilder api;
     private final Listener<HashMap<String, T>> listener;
 
-    public Downloader(RequestQueue q,
-                      APIRequestBuilder api,
+    public Downloader(APIRequestBuilder api,
                       Listener<HashMap<String, T>> listener) {
         this.api = api;
-        this.requestQueue = q;
+        this.requestQueue = Service.getInstance().getRequestQueue();
         this.listener = listener;
         this.items = new HashMap<>();
     }

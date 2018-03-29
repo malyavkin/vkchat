@@ -9,38 +9,38 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import Persistence.Entities.User.User;
+import Persistence.Entities.Group.Group;
 import Util.API.APIRequestBuilder;
 import Util.API.Method;
-import Util.API.Methods.users.GetMethod;
+import Util.API.Methods.groups.GetById;
 import Util.Downloader.Downloader;
 import Util.Listener;
 
-public class UserDownloader extends Downloader<User> {
-    private final static String TAG = "UserDownloader";
+public class GroupDownloader extends Downloader<Group> {
+    private final static String TAG = "GroupDownloader";
     private List<String> ids;
 
-    public UserDownloader(APIRequestBuilder api,
-                          Listener<HashMap<String, User>> listener,
-                          String id) {
+    public GroupDownloader(APIRequestBuilder api,
+                           Listener<HashMap<String, Group>> listener,
+                           String id) {
         super(api, listener);
         this.ids = Arrays.asList(id);
         this.ids.add(id);
     }
 
-    public UserDownloader(APIRequestBuilder api,
-                          Listener<HashMap<String, User>> listener,
-                          List<String> users) {
+    public GroupDownloader(APIRequestBuilder api,
+                           Listener<HashMap<String, Group>> listener,
+                           List<String> users) {
         super(api, listener);
         ids = users;
         run();
     }
 
     @Override
-    protected void processResponse(JSONObject response, Method<User> method) {
+    protected void processResponse(JSONObject response, Method<Group> method) {
 
         try {
-            HashMap<String, User> newUsers = method.parseResult(response);
+            HashMap<String, Group> newUsers = method.parseResult(response);
             items.putAll(newUsers);
 
         } catch (JSONException e) {
@@ -51,7 +51,7 @@ public class UserDownloader extends Downloader<User> {
     }
 
     @Override
-    protected Method<User> getInitialParams() {
-        return new GetMethod(this.ids);
+    protected Method<Group> getInitialParams() {
+        return new GetById(this.ids);
     }
 }

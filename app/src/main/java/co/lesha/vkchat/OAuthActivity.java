@@ -13,6 +13,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import Util.Constants;
+import Util.Service.NameCache;
+import Util.Service.Service;
+
 public class OAuthActivity extends AppCompatActivity {
 
     private static final String TAG = "OAuthActivity";
@@ -62,7 +65,10 @@ public class OAuthActivity extends AppCompatActivity {
         }
     }
 
-    private void goToChatList(String token) {
+    private void onTokenObtained(String token) {
+        Service.getInstance().setNameCache(
+                new NameCache(token)
+        );
         Intent I = new Intent(OAuthActivity.this, ChatListActivity.class);
         I.putExtra(Constants.TOKEN, token);
         startActivity(I);
@@ -80,7 +86,7 @@ public class OAuthActivity extends AppCompatActivity {
                     return false;
                 }
                 Log.d(TAG, "shouldOverrideUrlLoading: "+ token);
-                goToChatList(token);
+                onTokenObtained(token);
                 return true;
             }
         });
@@ -98,7 +104,7 @@ public class OAuthActivity extends AppCompatActivity {
             Long tsLong = System.currentTimeMillis() / 1000;
             Long validUntil = sharedPreferences.getLong(PREFS_OAUTH_EXPIRY, 0);
             if (tsLong < validUntil) {
-                goToChatList(token);
+                onTokenObtained(token);
             } else {
                 obtainToken();
             }

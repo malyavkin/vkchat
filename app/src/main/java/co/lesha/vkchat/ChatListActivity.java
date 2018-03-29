@@ -7,8 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.android.volley.RequestQueue;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,16 +20,14 @@ import Persistence.Entities.User.User;
 import Util.API.APIRequestBuilder;
 import Util.Constants;
 import Util.Downloader.Downloaders.DialogSequentialDownloader;
-import Util.Downloader.Downloaders.UserDownloader;
 import Util.Listener;
-import Util.Network.Queue;
+import Util.Service.Service;
 
 public class ChatListActivity extends AppCompatActivity {
     private static String TAG = "ChatListActivity";
     private RecyclerView rv;
     private APIRequestBuilder api;
     private HashMap<String, Dialog> dialogs = new HashMap<>();
-    private RequestQueue q;
     private Listener<Dialog> onDialogItemClickListener;
     private String token;
 
@@ -67,21 +63,16 @@ public class ChatListActivity extends AppCompatActivity {
             }
         }
 
-        new UserDownloader(
-                q,
-                api,
-                new Listener<HashMap<String, User>>() {
-                    @Override
-                    public void call(HashMap<String, User> param) {
-                        for (String key : param.keySet()) {
-                            String fullname = param.get(key).fullname();
-                            dialogs.get(DialogType.PERSON + "_" + key).chatTitle = fullname;
-                        }
-                        updateView();
-                    }
-                },
-                personIds
-        );
+        Service.getInstance().getNameCache().getUsers(personIds, new Listener<HashMap<String, User>>() {
+            @Override
+            public void call(HashMap<String, User> param) {
+                for (String key : param.keySet()) {
+                    String fullname = param.get(key).fullname();
+                    dialogs.get(DialogType.PERSON + "_" + key).chatTitle = fullname;
+                }
+                updateView();
+            }
+        });
     }
 
     /**
@@ -89,7 +80,6 @@ public class ChatListActivity extends AppCompatActivity {
      */
     private void obtainDialogs() {
         new DialogSequentialDownloader(
-                q,
                 api,
                 new Listener<HashMap<String, Dialog>>() {
 
@@ -124,7 +114,6 @@ public class ChatListActivity extends AppCompatActivity {
         Intent I = getIntent();
         token = I.getStringExtra(Constants.TOKEN);
         api = new APIRequestBuilder(token);
-        q = Queue.getInstance().getQueue();
 
         onDialogItemClickListener = new Listener<Dialog>() {
             @Override

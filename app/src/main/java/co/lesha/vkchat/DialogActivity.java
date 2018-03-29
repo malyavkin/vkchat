@@ -5,16 +5,18 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
+import java.util.HashMap;
 
+import Persistence.Entities.Dialog.DialogType;
+import Persistence.Entities.User.User;
 import Util.API.APIRequestBuilder;
 import Util.Constants;
-import Util.Network.Queue;
+import Util.Listener;
+import Util.Service.Service;
 
 public class DialogActivity extends AppCompatActivity {
     String token;
     APIRequestBuilder api;
-    RequestQueue q;
 
 
     @Override
@@ -24,17 +26,24 @@ public class DialogActivity extends AppCompatActivity {
 
         Intent I = getIntent();
         token = I.getStringExtra(Constants.TOKEN);
-        String type = I.getStringExtra("type");
-        String id = I.getStringExtra("id");
-        q = Queue.getInstance().getQueue();
+        DialogType type = DialogType.valueOf(I.getStringExtra("type"));
+        final String id = I.getStringExtra("id");
         api = new APIRequestBuilder(token);
 
         TextView text_api = findViewById(R.id.text_api);
         text_api.setText(token);
         TextView text_type = findViewById(R.id.text_type);
-        text_type.setText(type);
+        text_type.setText(type.toString());
         TextView text_id = findViewById(R.id.text_id);
         text_id.setText(id);
+        if (type == DialogType.PERSON) {
+            Service.getInstance().getNameCache().getUser(id, new Listener<HashMap<String, User>>() {
+                @Override
+                public void call(HashMap<String, User> param) {
+                    setTitle(param.get(id).fullname());
+                }
+            });
+        }
 
     }
 }

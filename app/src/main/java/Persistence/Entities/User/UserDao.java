@@ -8,13 +8,13 @@ import java.util.List;
 
 @Dao
 public interface UserDao {
-    @Query("SELECT * FROM users")
+    @Query("SELECT * FROM `Group`")
     List<User> getAll();
 
-    @Query("SELECT * FROM users WHERE id IN (:userIds)")
+    @Query("SELECT * FROM `Group` WHERE id IN (:userIds)")
     List<User> loadAllByIds(int[] userIds);
 
-    @Query("SELECT * FROM users WHERE id IN (:userIds)")
+    @Query("SELECT * FROM `Group` WHERE id IN (:userIds)")
     List<User> loadAllByIdsAfterDate(int[] userIds);
 
 
