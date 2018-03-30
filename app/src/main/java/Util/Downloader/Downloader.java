@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 import Persistence.Entities.Model;
-import Util.API.APIRequestBuilder;
 import Util.API.Method;
 import Util.Listener;
 import Util.Service.Service;
@@ -25,12 +24,9 @@ import Util.Service.Service;
 public abstract class Downloader<T extends Model> {
     protected final RequestQueue requestQueue;
     protected final HashMap<String, T> items;
-    private final APIRequestBuilder api;
     private final Listener<HashMap<String, T>> listener;
 
-    public Downloader(APIRequestBuilder api,
-                      Listener<HashMap<String, T>> listener) {
-        this.api = api;
+    public Downloader(Listener<HashMap<String, T>> listener) {
         this.requestQueue = Service.getInstance().getRequestQueue();
         this.listener = listener;
         this.items = new HashMap<>();
@@ -50,7 +46,7 @@ public abstract class Downloader<T extends Model> {
     }
 
     protected JsonObjectRequest buildRequest(final Method<T> method) {
-        String s = api.makeRequestUrl(method);
+        String s = Service.getInstance().getApi().makeRequestUrl(method);
         return new JsonObjectRequest(s, null,
                 new Response.Listener<JSONObject>() {
                     @Override

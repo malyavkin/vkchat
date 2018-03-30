@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import Persistence.Entities.Group.Group;
-import Util.API.APIRequestBuilder;
 import Util.API.Method;
 import Util.API.Methods.groups.GetById;
 import Util.Downloader.Downloader;
@@ -20,18 +19,16 @@ public class GroupDownloader extends Downloader<Group> {
     private final static String TAG = "GroupDownloader";
     private List<String> ids;
 
-    public GroupDownloader(APIRequestBuilder api,
-                           Listener<HashMap<String, Group>> listener,
+    public GroupDownloader(Listener<HashMap<String, Group>> listener,
                            String id) {
-        super(api, listener);
+        super(listener);
         this.ids = Collections.singletonList(id);
         this.ids.add(id);
     }
 
-    public GroupDownloader(APIRequestBuilder api,
-                           Listener<HashMap<String, Group>> listener,
+    public GroupDownloader(Listener<HashMap<String, Group>> listener,
                            List<String> users) {
-        super(api, listener);
+        super(listener);
         ids = users;
         run();
     }

@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 import Persistence.Entities.Dialog.Dialog;
-import Util.API.APIRequestBuilder;
 import Util.API.Method;
 import Util.API.Methods.messages.GetDialogsMethod;
 import Util.Downloader.SequentialDownloader;
@@ -17,9 +16,8 @@ import Util.Listener;
 public class DialogSequentialDownloader extends SequentialDownloader<Dialog> {
     private final static String TAG = "DialogSeqDl";
 
-    public DialogSequentialDownloader(APIRequestBuilder api,
-                                      Listener<HashMap<String, Dialog>> listener) {
-        super(api, listener);
+    public DialogSequentialDownloader(Listener<HashMap<String, Dialog>> listener) {
+        super(listener);
         run();
     }
 

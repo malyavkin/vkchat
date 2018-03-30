@@ -10,14 +10,10 @@ import java.util.HashMap;
 import Persistence.Entities.Dialog.DialogType;
 import Persistence.Entities.Group.Group;
 import Persistence.Entities.User.User;
-import Util.API.APIRequestBuilder;
-import Util.Constants;
 import Util.Listener;
 import Util.Service.Service;
 
 public class DialogActivity extends AppCompatActivity {
-    String token;
-    APIRequestBuilder api;
 
 
     @Override
@@ -26,13 +22,9 @@ public class DialogActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dialog);
 
         Intent I = getIntent();
-        token = I.getStringExtra(Constants.TOKEN);
         DialogType type = DialogType.valueOf(I.getStringExtra("type"));
         final String id = I.getStringExtra("id");
-        api = new APIRequestBuilder(token);
 
-        TextView text_api = findViewById(R.id.text_api);
-        text_api.setText(token);
         TextView text_type = findViewById(R.id.text_type);
         text_type.setText(type.toString());
         TextView text_id = findViewById(R.id.text_id);

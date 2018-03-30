@@ -18,8 +18,6 @@ import Persistence.Entities.Dialog.Dialog;
 import Persistence.Entities.Dialog.DialogType;
 import Persistence.Entities.Group.Group;
 import Persistence.Entities.User.User;
-import Util.API.APIRequestBuilder;
-import Util.Constants;
 import Util.Downloader.Downloaders.DialogSequentialDownloader;
 import Util.Listener;
 import Util.Service.Service;
@@ -27,10 +25,8 @@ import Util.Service.Service;
 public class ChatListActivity extends AppCompatActivity {
     private static String TAG = "ChatListActivity";
     private RecyclerView rv;
-    private APIRequestBuilder api;
     private HashMap<String, Dialog> dialogs = new HashMap<>();
     private Listener<Dialog> onDialogItemClickListener;
-    private String token;
 
     private static <C> List<C> asList(HashMap<String, C> hashMap) {
         if (hashMap == null) return null;
@@ -99,7 +95,6 @@ public class ChatListActivity extends AppCompatActivity {
      */
     private void obtainDialogs() {
         new DialogSequentialDownloader(
-                api,
                 new Listener<HashMap<String, Dialog>>() {
 
                     @Override
@@ -115,7 +110,6 @@ public class ChatListActivity extends AppCompatActivity {
     private void onDialogItemClick(Dialog d) {
         Log.d(TAG, "Hello " + d.chatTitle + String.valueOf(d.entity_id));
         Intent I = new Intent(ChatListActivity.this, DialogActivity.class);
-        I.putExtra(Constants.TOKEN, token);
         I.putExtra("type", d.type.toString());
         I.putExtra("id", d.entity_id);
         I.putExtra("Serialized", d.toString());
@@ -130,10 +124,6 @@ public class ChatListActivity extends AppCompatActivity {
         rv = findViewById(R.id.chat_list_recycler);
         rv.setHasFixedSize(false);
         rv.setLayoutManager(new LinearLayoutManager(this));
-
-        Intent I = getIntent();
-        token = I.getStringExtra(Constants.TOKEN);
-        api = new APIRequestBuilder(token);
 
         onDialogItemClickListener = new Listener<Dialog>() {
             @Override

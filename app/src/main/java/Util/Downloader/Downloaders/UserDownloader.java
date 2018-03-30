@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import Persistence.Entities.User.User;
-import Util.API.APIRequestBuilder;
 import Util.API.Method;
 import Util.API.Methods.users.GetMethod;
 import Util.Downloader.Downloader;
@@ -20,18 +19,17 @@ public class UserDownloader extends Downloader<User> {
     private final static String TAG = "UserDownloader";
     private List<String> ids;
 
-    public UserDownloader(APIRequestBuilder api,
-                          Listener<HashMap<String, User>> listener,
+    public UserDownloader(Listener<HashMap<String, User>> listener,
                           String id) {
-        super(api, listener);
+        super(listener);
         this.ids = Collections.singletonList(id);
         this.ids.add(id);
+        run();
     }
 
-    public UserDownloader(APIRequestBuilder api,
-                          Listener<HashMap<String, User>> listener,
+    public UserDownloader(Listener<HashMap<String, User>> listener,
                           List<String> users) {
-        super(api, listener);
+        super(listener);
         ids = users;
         run();
     }

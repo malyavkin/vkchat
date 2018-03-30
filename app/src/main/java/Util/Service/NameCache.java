@@ -7,7 +7,6 @@ import java.util.List;
 
 import Persistence.Entities.Group.Group;
 import Persistence.Entities.User.User;
-import Util.API.APIRequestBuilder;
 import Util.Downloader.Downloaders.GroupDownloader;
 import Util.Downloader.Downloaders.UserDownloader;
 import Util.Listener;
@@ -15,16 +14,9 @@ import Util.Listener;
 public class NameCache {
     private HashMap<String, User> users;
     private HashMap<String, Group> groups;
-    private APIRequestBuilder api;
 
-    public NameCache(APIRequestBuilder api) {
+    public NameCache() {
         setup();
-        this.api = api;
-    }
-
-    public NameCache(String token) {
-        setup();
-        this.api = new APIRequestBuilder(token);
     }
 
     private void setup() {
@@ -52,7 +44,7 @@ public class NameCache {
             }
         };
         if (requestIds.size() != 0) {
-            new GroupDownloader(api, listener, requestIds);
+            new GroupDownloader(listener, requestIds);
         } else {
             callback.call(groups);
         }
@@ -80,7 +72,7 @@ public class NameCache {
             }
         };
         if (requestIds.size() != 0) {
-            new UserDownloader(api, listener, requestIds);
+            new UserDownloader(listener, requestIds);
         } else {
             callback.call(users);
         }

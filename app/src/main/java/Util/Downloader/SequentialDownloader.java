@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 import Persistence.Entities.Model;
-import Util.API.APIRequestBuilder;
 import Util.API.Method;
 import Util.Listener;
 
@@ -19,8 +18,8 @@ import Util.Listener;
 public abstract class SequentialDownloader<T extends Model> extends Downloader<T> {
     private final static String TAG = "SequentialDownloader";
 
-    protected SequentialDownloader(APIRequestBuilder api, Listener<HashMap<String, T>> listener) {
-        super(api, listener);
+    protected SequentialDownloader(Listener<HashMap<String, T>> listener) {
+        super(listener);
     }
 
     /**

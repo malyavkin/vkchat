@@ -12,6 +12,7 @@ import android.webkit.WebViewClient;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import Util.API.APIRequestBuilder;
 import Util.Constants;
 import Util.Service.NameCache;
 import Util.Service.Service;
@@ -43,7 +44,7 @@ public class OAuthActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 String ref = url.getRef();
                 String access_token = "";
-                String expires_in = "0";
+                String expires_in = "86400000";
                 for (String s : ref.split("&")) {
                     String[] kv = s.split("=");
                     editor.putString(kv[0], kv[1]);
@@ -66,11 +67,14 @@ public class OAuthActivity extends AppCompatActivity {
     }
 
     private void onTokenObtained(String token) {
+
         Service.getInstance().setNameCache(
-                new NameCache(token)
+                new NameCache()
+        );
+        Service.getInstance().setApi(
+                new APIRequestBuilder(token)
         );
         Intent I = new Intent(OAuthActivity.this, ChatListActivity.class);
-        I.putExtra(Constants.TOKEN, token);
         startActivity(I);
         finish();
     }
