@@ -59,7 +59,9 @@ public class DialogSequentialDownloader extends SequentialDownloader<Dialog> {
     }
 
     @Override
-    protected void onPartialFinish() {
-        loadMore();
+    protected void onPartialFinish(boolean isCompleteFinish) {
+        if (!isCompleteFinish) {
+            loadMore();
+        }
     }
 }

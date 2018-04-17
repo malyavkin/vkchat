@@ -65,7 +65,7 @@ public class HistorySequentialDownloader extends SequentialDownloader<Message> {
     }
 
     @Override
-    protected void onPartialFinish() {
+    protected void onPartialFinish(boolean isCompleteFinish) {
         //onPartialFinishListener.call();
     }
 }

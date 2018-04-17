@@ -41,7 +41,7 @@ public abstract class SequentialDownloader<T extends Model> extends Downloader<T
         requestQueue.add(buildRequest(newMethod));
     }
 
-    protected void onPartialFinish() {
+    protected void onPartialFinish(boolean isCompleteFinish) {
 
     }
 
@@ -57,9 +57,9 @@ public abstract class SequentialDownloader<T extends Model> extends Downloader<T
             Log.e(TAG, "Cannot get new params, finishing prematurely");
             e.printStackTrace();
         }
-
-        onPartialFinish();
-        if (newMethod == null) {
+        boolean isCompleteFinish = newMethod == null;
+        onPartialFinish(isCompleteFinish);
+        if (isCompleteFinish) {
             onFinish();
         }
     }
