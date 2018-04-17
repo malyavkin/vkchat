@@ -17,9 +17,10 @@ import Util.Listener;
  */
 public abstract class SequentialDownloader<T extends Model> extends Downloader<T> {
     private final static String TAG = "SequentialDownloader";
+    private Method<T> newMethod = null;
 
-    protected SequentialDownloader(Listener<HashMap<String, T>> listener) {
-        super(listener);
+    protected SequentialDownloader(Listener<HashMap<String, T>> onFinishListener) {
+        super(onFinishListener);
     }
 
     /**
@@ -36,12 +37,20 @@ public abstract class SequentialDownloader<T extends Model> extends Downloader<T
         afterProcessResponse(response, method);
     }
 
+    protected void loadMore() {
+        requestQueue.add(buildRequest(newMethod));
+    }
+
+    protected void onPartialFinish() {
+
+    }
+
     /**
      * @param response
      * @param method
      */
     private void afterProcessResponse(JSONObject response, Method<T> method) {
-        Method<T> newMethod = null;
+
         try {
             newMethod = getParamsForNextRequest(response, method);
         } catch (JSONException e) {
@@ -49,9 +58,8 @@ public abstract class SequentialDownloader<T extends Model> extends Downloader<T
             e.printStackTrace();
         }
 
-        if (newMethod != null) {
-            requestQueue.add(buildRequest(newMethod));
-        } else {
+        onPartialFinish();
+        if (newMethod == null) {
             onFinish();
         }
     }

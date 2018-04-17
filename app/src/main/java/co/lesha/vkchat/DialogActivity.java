@@ -3,7 +3,6 @@ package co.lesha.vkchat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
 
 import java.util.HashMap;
 
@@ -24,11 +23,6 @@ public class DialogActivity extends AppCompatActivity {
         Intent I = getIntent();
         DialogType type = DialogType.valueOf(I.getStringExtra("type"));
         final String id = I.getStringExtra("id");
-
-        TextView text_type = findViewById(R.id.text_type);
-        text_type.setText(type.toString());
-        TextView text_id = findViewById(R.id.text_id);
-        text_id.setText(id);
 
         switch (type) {
             case CONF:

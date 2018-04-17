@@ -24,7 +24,7 @@ import Util.Service.Service;
 public abstract class Downloader<T extends Model> {
     protected final RequestQueue requestQueue;
     protected final HashMap<String, T> items;
-    private final Listener<HashMap<String, T>> listener;
+    protected final Listener<HashMap<String, T>> listener;
 
     public Downloader(Listener<HashMap<String, T>> listener) {
         this.requestQueue = Service.getInstance().getRequestQueue();
